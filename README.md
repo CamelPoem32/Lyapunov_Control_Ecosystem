@@ -119,7 +119,16 @@ The system is implemented using a modular, class-based structure with clear resp
 
 
 ## Simulation results
+### No control applied
 ![Demo 1](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/anim_death_control.gif)
 
+
+### Control applied
+![Demo 2](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/animation_up_up_up.gif)
+
+
+### Control applied
+![Demo 3](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/animation_down_down_down.gif)
+
 ## Phase Portrait
-<video src="https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/Phase_Portrait.mp4" controls width="1000"></video>
+<video src="https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/Phase_Portrait.mp4"></video>
