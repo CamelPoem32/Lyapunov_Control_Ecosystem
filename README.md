@@ -81,6 +81,8 @@ V(x) = (x - x^*)^T Q (x - x^*)
 \end{aligned}
 $$
 
+![energy](images/lyap.jpg)
+
 In our implementation, we use the **identity matrix** for $Q$, which simplifies the Lyapunov function to:
 
 $$ V(x) = (f - f^*)^2 + (p - p^*)^2 + (r - r^*)^2 $$
