@@ -79,7 +79,7 @@ To stabilize the system to a desired target state ![target](images/equation.jpg)
 
 In our implementation, we use the **identity matrix** for $Q$, which simplifies the Lyapunov function to:
 
-$$ V(x) = (f - f^*)^2 + (p - p^*)^2 + (r - r^*)^2 $$
+![energy1](images/eng1.jpg)
 
 
 ---
