@@ -116,3 +116,10 @@ The system is implemented using a modular, class-based structure with clear resp
 
 - `Plant`: An abstract class defining the structure of a dynamical system.
 - `Ecosystem`: Inherits from `Plant`. Implements the specific nonlinear dynamics:
+
+
+## Simulation results
+![Demo 1](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/anim_death_control.gif)
+
+## Phase Portrait
+<video src="https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/Phase_Portrait.mp4" controls width="1000"></video>
