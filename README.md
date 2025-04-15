@@ -79,7 +79,7 @@ $$
 V(x) = (x - x^*)^T Q (x - x^*)
 $$
 
-![energy]https://quicklatex.com/cache3/af/ql_6a5bcbb5c42703a27f05bda7e95f23af_l3.png
+![energy](https://quicklatex.com/cache3/af/ql_6a5bcbb5c42703a27f05bda7e95f23af_l3.png)
 
 In our implementation, we use the **identity matrix** for $Q$, which simplifies the Lyapunov function to:
 
