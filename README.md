@@ -75,10 +75,6 @@ Where:
 
 To stabilize the system to a desired target state ![target](images/equation.jpg), we employ Lyapunov-based feedback control. The Lyapunov function is chosen as a quadratic energy function:
 
-$$
-V(x) = (x - x^*)^T Q (x - x^*)
-$$
-
 ![energy](images/lyap.jpg)
 
 In our implementation, we use the **identity matrix** for $Q$, which simplifies the Lyapunov function to:
