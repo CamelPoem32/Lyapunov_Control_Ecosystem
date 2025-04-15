@@ -131,4 +131,4 @@ The system is implemented using a modular, class-based structure with clear resp
 ![Demo 3](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/animation_down_down_down.gif)
 
 ## Phase Portrait
-<video src="https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/Phase_Portrait.mp4"></video>
+![Phase Portrait](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/Phase_Portrait.gif)
