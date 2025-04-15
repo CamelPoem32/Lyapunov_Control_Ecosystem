@@ -76,7 +76,7 @@ Where:
 
 ## Lyapunov-Based Control
 
-To stabilize the system to a desired target state ![target](images/equation.jpg), we employ Lyapunov-based feedback control. The Lyapunov function is chosen as a quadratic energy function:
+To stabilize the system to a desired target state ![target](images/equation.jpg), we employ Lyapunov-based control. The Lyapunov function is chosen as a quadratic energy function:
 
 ![energy](images/lyap.jpg)
 
@@ -115,14 +115,78 @@ The system is implemented using a modular, class-based structure with clear resp
 
 ### `Plant` and `Ecosystem`
 
-- `Plant`: An abstract class defining the structure of a dynamical system.
-- `Ecosystem`: Inherits from `Plant`. Implements the specific nonlinear dynamics:
+- **`Plant`**: An abstract base class defining the template for a general dynamical system. It contains basic state handling and a `step` method to evolve the system forward in time, which must be implemented in subclasses.
+  
+- **`Ecosystem`**: A concrete subclass of `Plant` implementing the specific nonlinear dynamics of a food-prey-predator ecosystem. The dynamics equations follow the form:
 
-```python
-df = self.k * f - self.α * p + u1
-dp = self.β * f * p - self.γ * r + u2
-dr = self.δ * p * r - self.μ * r + u3
-```
+  $$
+  \begin{aligned}
+  \dot{f} &= kf - \alpha p + u_1 \\
+  \dot{p} &= \beta fp - \gamma r + u_2 \\
+  \dot{r} &= \delta pr - \mu r + u_3
+  \end{aligned}
+  $$
+
+The method `system_dynamics` computes the derivatives given the current state and control inputs, while `step` updates the state using Euler integration.
+
+---
+
+### `EnergyController`
+
+- Implements the **feedback linearization** strategy derived in the Lyapunov-based stability analysis.
+- It defines the control law in `get_action`, which cancels nonlinear dynamics and applies linear stabilizing feedback:
+  
+  $$
+  \begin{aligned}
+  u_1 &= -kf + \alpha p - \tilde{f} k \\
+  u_2 &= -\beta f p + \gamma r - \tilde{p} \beta \\
+  u_3 &= -\delta p r + \mu r - \tilde{r} \mu
+  \end{aligned}
+  $$
+
+  where $ \tilde{f}, \tilde{p}, \tilde{r} $ are deviations from target state. These control inputs ensure $ \dot{V} = -k \tilde{f}^2 - \beta \tilde{p}^2 - \mu \tilde{r}^2 \leq 0 $.
+
+- It also includes a Lyapunov function for monitoring convergence.
+
+---
+
+### `Simulation` Class
+
+- Responsible for running the system dynamics over time under the influence of a controller.
+- The `run` method iteratively:
+  - Retrieves control actions from the controller.
+  - Applies them to the `Plant` via the `step` method.
+  - Records system states and actions.
+
+- Outputs the entire trajectory of system evolution and corresponding control inputs.
+
+---
+
+### `Animator_ImageIO_Proc` Class
+
+- Provides a **parallelized animation pipeline** using `ProcessPoolExecutor`.
+- Key methods:
+  - `create_and_save_frame`: Renders a frame with state and action plots.
+  - `generate_frames_parallel`: Efficiently generates frames in parallel to accelerate rendering.
+  - `create_gif`: Assembles all saved PNG frames into a GIF using `imageio`.
+  - `animate`: Full animation workflow — generates frames, assembles them, and displays the result.
+
+This design allows for scalable and efficient visualization of long simulations with high-resolution dynamics.
+
+---
+
+### Summary of the Pipeline
+
+The full system integrates theoretical Lyapunov-based control with a robust simulation and animation pipeline:
+
+1. **Modeling**: Define nonlinear dynamics in `Ecosystem`.
+2. **Control**: Use `EnergyController` to compute feedback-linearized control actions.
+3. **Simulation**: Run closed-loop control using the `Simulation` class.
+4. **Visualization**: Render trajectory evolution with parallel frame generation and animation via `Animator_ImageIO_Proc`.
+
+This structured approach makes it easy to experiment with different control laws, parameter settings, and target behaviors, while providing a rich visual understanding of the system's convergence properties.
+
+---
 
 # Control law derivation
 
@@ -130,19 +194,19 @@ dr = self.δ * p * r - self.μ * r + u3
 
 ## Lyapunov Function Definition
 
-We define the Lyapunov function as a simple sum of squared errors:
+We define the Lyapunov function as a simple sum of squared state variables:
 
 $$
 V = \frac{1}{2}(x_1^2 + x_2^2 + x_3^2) = \frac{1}{2}(f^2 + p^2 + r^2)
 $$
 
-where \( x = \begin{bmatrix} f \\ p \\ r \end{bmatrix} \) is the current state of the system.
+where $ x = \begin{bmatrix} f \\ p \\ r \end{bmatrix} $ is the current state of the system.
 
 ---
 
 ## Lyapunov Function Derivative
 
-To analyze system stability, we compute the time derivative of \( V \):
+To analyze system stability, we compute the time derivative of $ V $:
 
 $$
 \dot{V} = f \dot{f} + p \dot{p} + r \dot{r}
@@ -193,9 +257,9 @@ With control included:
 
 $$
 \begin{aligned}
-\dot{f} &= kf - \alpha p + u_1 \\
-\dot{p} &= \beta f p - \gamma r + u_2 \\
-\dot{r} &= \delta p r - \mu r + u_3 \\
+\dot{f} &= kf - \alpha p + a_1 \\
+\dot{p} &= \beta f p - \gamma r + a_2 \\
+\dot{r} &= \delta p r - \mu r + a_3 \\
 \end{aligned}
 $$
 
@@ -203,56 +267,25 @@ Now expand the derivative:
 
 $$
 \begin{aligned}
-\dot{V} &= \tilde{f}(kf - \alpha p + u_1) + \tilde{p}(\beta f p - \gamma r + u_2) + \tilde{r}(\delta p r - \mu r + u_3) \\
-&= \tilde{f} k f - \tilde{f} \alpha p + \tilde{f} u_1 + \tilde{p} \beta f p - \tilde{p} \gamma r + \tilde{p} u_2 + \tilde{r} \delta p r - \tilde{r} \mu r + \tilde{r} u_3
+\dot{V} &= \tilde{f}(kf - \alpha p + a_1) + \tilde{p}(\beta f p - \gamma r + a_2) + \tilde{r}(\delta p r - \mu r + a_3) \\
+&= \tilde{f} k f - \tilde{f} \alpha p + \tilde{f} a_1 + \tilde{p} \beta f p - \tilde{p} \gamma r + \tilde{p} a_2 + \tilde{r} \delta p r - \tilde{r} \mu r + \tilde{r} a_3
 \end{aligned}
 $$
 
-Group by control inputs:
+To ensure $ \dot{V} \leq 0 $, we choose control actions that cancel out the positive components.
 
-$$
-\dot{V} = \text{nonlinear terms} + \tilde{f} u_1 + \tilde{p} u_2 + \tilde{r} u_3
-$$
-
-To ensure \( \dot{V} \leq 0 \), we choose control actions that cancel out the positive components.
-
----
-
-## Control Law Derivation
-
-From the theoretical derivation and code, control actions are:
-
-```python
-f, p, r = state[:3]
-f_goal, p_goal, r_goal = state[:3] - target[:3]
-
-a1 = -f * self.k + p * self.α - f_goal * self.k
-a2 = -p * f * self.β + r * self.γ - p_goal * self.β
-a3 = -r * p * self.δ + r * self.μ - r_goal * self.μ
-```
 
 ## Detailed Expansion of Lyapunov Derivative
 
 We previously wrote the derivative of the Lyapunov function as:
 
 $$
-\dot{V} = \tilde{f}(kf - \alpha p + u_1) + \tilde{p}(\beta f p - \gamma r + u_2) + \tilde{r}(\delta p r - \mu r + u_3)
+\dot{V} = \tilde{f}(kf - \alpha p + a_1) + \tilde{p}(\beta f p - \gamma r + a_2) + \tilde{r}(\delta p r - \mu r + a_3)
 $$
 
 ### Step 1: Expand all nonlinear terms
 
-Distribute each term:
-
-$$
-\begin{aligned}
-\dot{V} &= \tilde{f} \cdot kf - \tilde{f} \cdot \alpha p + \tilde{f} \cdot u_1 \\
-&\quad + \tilde{p} \cdot \beta f p - \tilde{p} \cdot \gamma r + \tilde{p} \cdot u_2 \\
-&\quad + \tilde{r} \cdot \delta p r - \tilde{r} \cdot \mu r + \tilde{r} \cdot u_3 \\
-&= \text{(nonlinear dynamics)} + \tilde{f} u_1 + \tilde{p} u_2 + \tilde{r} u_3
-\end{aligned}
-$$
-
-Now label and group the **nonlinear dynamics**:
+Label and group the **nonlinear dynamics**:
 
 - $ \tilde{f} \cdot kf $ is nonlinear (bilinear in $ \tilde{f}, f $),
 - $ -\tilde{f} \cdot \alpha p $,
@@ -265,7 +298,7 @@ So:
 
 $$
 \begin{aligned}
-\dot{V} &= \underbrace{\tilde{f}(kf - \alpha p) + \tilde{p}(\beta f p - \gamma r) + \tilde{r}(\delta p r - \mu r)}_{\text{Nonlinear system dynamics}} + \tilde{f} u_1 + \tilde{p} u_2 + \tilde{r} u_3
+\dot{V} &= \underbrace{\tilde{f}(kf - \alpha p) + \tilde{p}(\beta f p - \gamma r) + \tilde{r}(\delta p r - \mu r)}_{\text{Nonlinear system dynamics}} + \tilde{f} a_1 + \tilde{p} a_2 + \tilde{r} a_3
 \end{aligned}
 $$
 
@@ -277,19 +310,19 @@ We now apply **feedback linearization** — design control inputs \( u_i \) that
 
 $$
 \begin{aligned}
-u_1 &= -kf + \alpha p - \tilde{f} k \\
-u_2 &= -\beta f p + \gamma r - \tilde{p} \beta \\
-u_3 &= -\delta p r + \mu r - \tilde{r} \mu
+a_1 &= -kf + \alpha p - \tilde{f} k \\
+a_2 &= -\beta f p + \gamma r - \tilde{p} \beta \\
+a_3 &= -\delta p r + \mu r - \tilde{r} \mu
 \end{aligned}
 $$
 
-Now substitute into \( \dot{V} \):
+Now substitute into $ \dot{V} $:
 
 $$
-\dot{V} = \tilde{f} u_1 + \tilde{p} u_2 + \tilde{r} u_3 + \text{nonlinear terms}
+\dot{V} = \tilde{f} a_1 + \tilde{p} a_2 + \tilde{r} a_3 + \text{nonlinear terms}
 $$
 
-But the nonlinear terms cancel **exactly** with the first part of each \( u_i \), so only the last damping terms remain:
+But the nonlinear terms cancel **exactly** with the first part of each $ a_i $, so only the last damping terms remain:
 
 $$
 \begin{aligned}
@@ -300,7 +333,7 @@ $$
 
 ---
 
-## Final Result
+## Step 3: Applying control laws
 
 The time derivative of the Lyapunov function becomes:
 
@@ -314,7 +347,7 @@ This is a **negative semi-definite** function. Each term is quadratic in the dev
 
 ---
 
-## Interpretation: Feedback Linearization
+## Result: stable system
 
 This approach is a classic **feedback linearization** technique:
 
@@ -329,16 +362,31 @@ This technique ensures that the Lyapunov function decreases over time, proving *
 
 
 ## Simulation results
+
+We've made several runs of our code on different trajectories, all corresponding gifs can be found in master branch.
+
 ### No control applied
+
+Without control, system diverges, and both prey and predators are eventually extincted.
+
 ![Demo 1](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/anim_death_control.gif)
 
 
 ### Control applied
+
+With control, we can reach any target state. And, it is important, that controls, applied to reach this target state, are achievable.
+
 ![Demo 2](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/animation_up_up_up.gif)
 
 
 ### Control applied
+
+Another example of successfull convergence to target state, with achievable control actions. However, controls depend on state variables, so with bigger system controls will also grow significantly.
+
 ![Demo 3](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/animation_down_down_down.gif)
 
 ## Phase Portrait
+
+We obtaied 3D Phase Portrait of the system, showing global convergence to target state from any (positive) initial state.
+
 ![Phase Portrait](https://github.com/CamelPoem32/Lyapunov_Control_Ecosystem/blob/master/animations/Phase_Portrait.gif)
