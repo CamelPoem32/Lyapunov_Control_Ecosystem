@@ -1,6 +1,9 @@
 # Lyapunov_Control_Ecosystem
 Lyapunov Control of Predator_Prey_Food Ecosystem
 
+
+![funny_picture](images/1461050888149073890.jpg)
+
 ---
 
 ## Problem Description
@@ -87,18 +90,17 @@ In our implementation, we use the **identity matrix** for $Q$, which simplifies 
 ### Properties of the Lyapunov Function
 
 1. **Positive Semi-Definite**:  
-   $$
-   V(x) \geq 0 \quad \forall x
-   $$
+
+   ![psd](images/psd.jpg)
+
    with equality if and only if $x = x^*$.
 
 2. **Time Derivative of the Lyapunov Function**:
 
    Let $e = x - x^*$. Then the derivative is:
 
-   $$
-   \dot{V}(x) = 2(f - f^*)\dot{f} + 2(p - p^*)\dot{p} + 2(r - r^*)\dot{r}
-   $$
+   ![V_dot](images/V_dot.jpg)
+   
 
    The controller is designed so that $\dot{V}(x) \leq 0$, which ensures stability and convergence to the equilibrium point.
 
