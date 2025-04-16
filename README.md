@@ -204,7 +204,7 @@ $$
 where 
 $
 x=\begin{bmatrix}
-f\\ 
+f \\ 
 p \\ 
 r \end{bmatrix}
 $ 
@@ -247,9 +247,9 @@ Let:
 
 $$
 \tilde{f}=f-f^*,
-\quad
+\enskip
 \tilde{p}=p-p^*,
-\quad
+\enskip
 \tilde{r}=r-r^*
 $$
 
