@@ -145,7 +145,7 @@ u_3 &= -\delta p r + \mu r - \tilde{r} \mu
 \end{aligned}
 $$
 
-where $ \tilde{f}, \tilde{p}, \tilde{r} $ are deviations from target state. These control inputs ensure $ \dot{V} = -k \tilde{f}^2 - \beta \tilde{p}^2 - \mu \tilde{r}^2 \leq 0 $.
+where $\tilde{f}, \tilde{p}, \tilde{r}$ are deviations from target state. These control inputs ensure $\dot{V} = -k \tilde{f}^2 - \beta \tilde{p}^2 - \mu \tilde{r}^2 \leq 0$.
 
 - It also includes a Lyapunov function for monitoring convergence.
 
@@ -201,13 +201,13 @@ $$
 V = \frac{1}{2}(x_1^2 + x_2^2 + x_3^2) = \frac{1}{2}(f^2 + p^2 + r^2)
 $$
 
-where $x = \begin{bmatrix} f \\ p \\ r \end{bmatrix}$ is the current state of the system.
+where $x=\begin{bmatrix}f\\ p \\ r \end{bmatrix}$ is the current state of the system.
 
 ---
 
 ## Lyapunov Function Derivative
 
-To analyze system stability, we compute the time derivative of $ V $:
+To analyze system stability, we compute the time derivative of $V$:
 
 $$
 \dot{V} = f \dot{f} + p \dot{p} + r \dot{r}
@@ -238,9 +238,7 @@ $$
 
 Let:
 
-$$
-   \tilde{f} = f - f^*, \quad \tilde{p} = p - p^*, \quad \tilde{r} = r - r^*
-$$
+$$\tilde{f}=f-f^*,\quad\tilde{p}=p-p^*,\quad\tilde{r}=r-r^*$$
 
 Define Lyapunov function for deviation from the target:
 
@@ -307,7 +305,7 @@ $$
 
 ## Step 2: Define control actions to cancel nonlinear terms
 
-We now apply **feedback linearization** — design control inputs \( u_i \) that cancel the nonlinear parts:
+We now apply **feedback linearization** — design control inputs $a_i$ that cancel the nonlinear parts:
 
 $$
 \begin{aligned}
