@@ -203,11 +203,11 @@ $$
 
 where 
 
-$$
+$
 x = \begin{bmatrix} f \\ 
 p \\ 
 r \end{bmatrix}
-$$
+$
 
 is the current state of the system.
 
