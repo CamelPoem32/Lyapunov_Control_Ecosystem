@@ -202,12 +202,13 @@ V = \frac{1}{2}(x_1^2 + x_2^2 + x_3^2) = \frac{1}{2}(f^2 + p^2 + r^2)
 $$
 
 where 
-$$
-x=\begin{bmatrix}
+$
+x= 
+\begin{bmatrix}
 f \\ 
 p \\ 
 r \end{bmatrix}
-$$ 
+$ 
 is the current state of the system.
 
 ---
@@ -246,8 +247,8 @@ $$
 Let:
 
 $$
-\tilde{f}=f-f^*,
-\tilde{p}=p-p^*,
+\tilde{f}=f-f^* \,
+\tilde{p}=p-p^* \,
 \tilde{r}=r-r^*
 $$
 
