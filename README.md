@@ -119,13 +119,14 @@ The system is implemented using a modular, class-based structure with clear resp
   
 - **`Ecosystem`**: A concrete subclass of `Plant` implementing the specific nonlinear dynamics of a food-prey-predator ecosystem. The dynamics equations follow the form:
 
-  $$
-  \begin{aligned}
-  \dot{f} &= kf - \alpha p + u_1 \\
-  \dot{p} &= \beta fp - \gamma r + u_2 \\
-  \dot{r} &= \delta pr - \mu r + u_3
-  \end{aligned}
-  $$
+$$
+\begin{aligned}
+\dot{f} &= kf - \alpha p + a_1 \\
+\dot{p} &= \beta fp - \gamma r + a_2 \\
+\dot{r} &= \delta pr - \mu r + a_3
+\end{aligned}
+$$
+  
 
 The method `system_dynamics` computes the derivatives given the current state and control inputs, while `step` updates the state using Euler integration.
 
@@ -136,15 +137,15 @@ The method `system_dynamics` computes the derivatives given the current state an
 - Implements the **feedback linearization** strategy derived in the Lyapunov-based stability analysis.
 - It defines the control law in `get_action`, which cancels nonlinear dynamics and applies linear stabilizing feedback:
   
-  $$
-  \begin{aligned}
-  u_1 &= -kf + \alpha p - \tilde{f} k \\
-  u_2 &= -\beta f p + \gamma r - \tilde{p} \beta \\
-  u_3 &= -\delta p r + \mu r - \tilde{r} \mu
-  \end{aligned}
-  $$
+$$
+\begin{aligned}
+u_1 &= -kf + \alpha p - \tilde{f} k \\
+u_2 &= -\beta f p + \gamma r - \tilde{p} \beta \\
+u_3 &= -\delta p r + \mu r - \tilde{r} \mu
+\end{aligned}
+$$
 
-  where $ \tilde{f}, \tilde{p}, \tilde{r} $ are deviations from target state. These control inputs ensure $ \dot{V} = -k \tilde{f}^2 - \beta \tilde{p}^2 - \mu \tilde{r}^2 \leq 0 $.
+where $ \tilde{f}, \tilde{p}, \tilde{r} $ are deviations from target state. These control inputs ensure $ \dot{V} = -k \tilde{f}^2 - \beta \tilde{p}^2 - \mu \tilde{r}^2 \leq 0 $.
 
 - It also includes a Lyapunov function for monitoring convergence.
 
@@ -200,7 +201,7 @@ $$
 V = \frac{1}{2}(x_1^2 + x_2^2 + x_3^2) = \frac{1}{2}(f^2 + p^2 + r^2)
 $$
 
-where $ x = \begin{bmatrix} f \\ p \\ r \end{bmatrix} $ is the current state of the system.
+where $x = \begin{bmatrix} f \\ p \\ r \end{bmatrix}$ is the current state of the system.
 
 ---
 
@@ -238,7 +239,7 @@ $$
 Let:
 
 $$
-\tilde{f} = f - f^*, \quad \tilde{p} = p - p^*, \quad \tilde{r} = r - r^*
+   \tilde{f} = f - f^*, \quad \tilde{p} = p - p^*, \quad \tilde{r} = r - r^*
 $$
 
 Define Lyapunov function for deviation from the target:
@@ -272,7 +273,7 @@ $$
 \end{aligned}
 $$
 
-To ensure $ \dot{V} \leq 0 $, we choose control actions that cancel out the positive components.
+To ensure $\dot{V} \leq 0$, we choose control actions that cancel out the positive components.
 
 
 ## Detailed Expansion of Lyapunov Derivative
@@ -287,12 +288,12 @@ $$
 
 Label and group the **nonlinear dynamics**:
 
-- $ \tilde{f} \cdot kf $ is nonlinear (bilinear in $ \tilde{f}, f $),
-- $ -\tilde{f} \cdot \alpha p $,
-- $ \tilde{p} \cdot \beta f p $,
-- $ -\tilde{p} \cdot \gamma r $,
-- $ \tilde{r} \cdot \delta p r $,
-- $ -\tilde{r} \cdot \mu r $
+- $\tilde{f} \cdot kf$ is nonlinear (bilinear in $\tilde{f}, f$),
+- $-\tilde{f} \cdot \alpha p$,
+- $\tilde{p} \cdot \beta f p$,
+- $-\tilde{p} \cdot \gamma r$,
+- $\tilde{r} \cdot \delta p r$,
+- $-\tilde{r} \cdot \mu r$
 
 So:
 
@@ -316,13 +317,13 @@ a_3 &= -\delta p r + \mu r - \tilde{r} \mu
 \end{aligned}
 $$
 
-Now substitute into $ \dot{V} $:
+Now substitute into $\dot{V}$:
 
 $$
 \dot{V} = \tilde{f} a_1 + \tilde{p} a_2 + \tilde{r} a_3 + \text{nonlinear terms}
 $$
 
-But the nonlinear terms cancel **exactly** with the first part of each $ a_i $, so only the last damping terms remain:
+But the nonlinear terms cancel **exactly** with the first part of each $a_i$, so only the last damping terms remain:
 
 $$
 \begin{aligned}
